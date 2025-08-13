@@ -4,15 +4,33 @@ def create_basic_challenges():
     """Set up the beginner challenges to get people started"""
     challenges = []
     
-    # Simple variable challenge
+    # Simple hello world challenge
     def check_hello_world(code):
-        # Need to execute their code and check if it prints correctly
+        # Need to capture their output and check if it prints correctly
+        import io
+        import sys
+        
         try:
+            # Capture printed output
+            old_stdout = sys.stdout
+            sys.stdout = captured_output = io.StringIO()
+            
             exec_globals = {}
             exec(code, exec_globals)
-            return True, "Great job! You've completed your first challenge."
-        except:
-            return False, "Make sure your code runs without errors."
+            
+            # Get what they printed
+            sys.stdout = old_stdout
+            output = captured_output.getvalue().strip()
+            
+            if "Hello, World!" in output:
+                return True, "Perfect! You've mastered your first print statement."
+            else:
+                return False, f"Expected 'Hello, World!' but got: '{output}'"
+                
+        except Exception as e:
+            if 'old_stdout' in locals():
+                sys.stdout = old_stdout
+            return False, f"Code error: {str(e)}"
     
     challenges.append(Challenge(
         id="hello_world",

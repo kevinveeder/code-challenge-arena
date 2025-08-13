@@ -79,26 +79,47 @@ class GameUI:
         print(f"\nDescription:")
         print(challenge.description)
         print(f"\n{self.colors['info']}Available hints: {len(challenge.hints)}{self.colors['reset']}")
-        print("\nType your Python code below. When finished, type 'SUBMIT' on a new line.")
-        print("Type 'HINT' for a hint, or 'QUIT' to return to menu.")
+        print(f"\n{self.colors['warning']}HOW TO SUBMIT:{self.colors['reset']}")
+        print("1. Type your Python code (multiple lines allowed)")
+        print("2. When done, press Enter to go to a new line")
+        print(f"3. Type {self.colors['success']}SUBMIT{self.colors['reset']} and press Enter to check your solution")
+        print(f"\nOther commands: {self.colors['info']}HINT{self.colors['reset']} (for a hint), {self.colors['info']}QUIT{self.colors['reset']} (return to menu)")
         print("-" * 50)
     
     def get_user_code(self):
         # Multi-line code input from user
-        print(f"\n{self.colors['info']}Enter your code:{self.colors['reset']}")
+        print(f"\n{self.colors['info']}Enter your code (type SUBMIT when done):{self.colors['reset']}")
         lines = []
+        line_number = 1
         while True:
             try:
-                line = input()
+                # Show line numbers to help user track their progress
+                prompt = f"{line_number:2d}> "
+                line = input(prompt)
+                
                 if line.strip().upper() == 'SUBMIT':
-                    break
+                    if lines:  # Make sure they actually wrote some code
+                        break
+                    else:
+                        print(f"{self.colors['warning']}Please write some code first, then type SUBMIT{self.colors['reset']}")
+                        continue
                 elif line.strip().upper() == 'HINT':
                     return 'HINT'
                 elif line.strip().upper() == 'QUIT':
                     return 'QUIT'
+                
                 lines.append(line)
+                line_number += 1
             except KeyboardInterrupt:
                 return 'QUIT'
+        
+        # Show what they submitted for confirmation
+        print(f"\n{self.colors['info']}Code submitted:{self.colors['reset']}")
+        print("-" * 30)
+        for i, line in enumerate(lines, 1):
+            print(f"{i:2d}: {line}")
+        print("-" * 30)
+        
         return '\n'.join(lines)
     
     def show_hint(self, hint: str):
