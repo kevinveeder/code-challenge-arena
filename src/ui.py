@@ -126,10 +126,19 @@ class GameUI:
                 
                 # Clean up the line to prevent indentation errors
                 if line.strip():  # Only process non-empty lines
-                    # If they started with spaces, clean them and add proper indent
+                    # Always start with the stripped line
                     cleaned_line = line.strip()
-                    if current_indent > 0 and line_number > 1:
-                        cleaned_line = " " * (current_indent - 2) + cleaned_line
+                    
+                    # Only add indentation if:
+                    # 1. We're not on the first line AND
+                    # 2. The previous line ended with a colon (indicating a block)
+                    should_indent = (line_number > 1 and 
+                                   lines and 
+                                   lines[-1].strip().endswith(':'))
+                    
+                    if should_indent and current_indent > 0:
+                        cleaned_line = " " * current_indent + cleaned_line
+                    
                     lines.append(cleaned_line)
                 else:
                     lines.append('')  # Keep empty lines as-is

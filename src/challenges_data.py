@@ -11,14 +11,19 @@ def create_basic_challenges():
         # Need to capture their output and check if it prints correctly
         import io
         import sys
+        import textwrap
         
         try:
+            # Clean up the code to handle any indentation issues
+            # This removes common indentation and cleans up the code
+            clean_code = textwrap.dedent(code).strip()
+            
             # Capture printed output
             old_stdout = sys.stdout
             sys.stdout = captured_output = io.StringIO()
             
             exec_globals = {}
-            exec(code, exec_globals)
+            exec(clean_code, exec_globals)
             
             # Get what they printed
             sys.stdout = old_stdout
@@ -48,14 +53,17 @@ def create_basic_challenges():
     # Variable assignment challenge
     def check_variables(code):
         try:
+            import textwrap
+            clean_code = textwrap.dedent(code).strip()
+            
             exec_globals = {}
-            exec(code, exec_globals)
+            exec(clean_code, exec_globals)
             # Check if they created the required variables
             if 'name' in exec_globals and 'age' in exec_globals:
                 return True, "Perfect! You've learned about variables."
             return False, "Make sure you create both 'name' and 'age' variables."
-        except:
-            return False, "Check your syntax - something went wrong."
+        except Exception as e:
+            return False, f"Check your syntax - something went wrong: {e}"
     
     challenges.append(Challenge(
         id="variables_basic",
@@ -71,14 +79,17 @@ def create_basic_challenges():
     # Loop challenge
     def check_simple_loop(code):
         try:
+            import textwrap
+            clean_code = textwrap.dedent(code).strip()
+            
             exec_globals = {}
-            exec(code, exec_globals)
+            exec(clean_code, exec_globals)
             # This is tricky to check but let's see if they used a loop keyword
-            if 'for' in code or 'while' in code:
+            if 'for' in clean_code or 'while' in clean_code:
                 return True, "Nice work with loops!"
             return False, "Try using a for loop or while loop."
-        except:
-            return False, "Something's not right with your loop syntax."
+        except Exception as e:
+            return False, f"Something's not right with your loop syntax: {e}"
     
     challenges.append(Challenge(
         id="simple_loop",
