@@ -1,4 +1,4 @@
-# Code Challenge Arena
+# Python Challenge Arena
 
 A Python game designed to help improve coding skills through interactive challenges.
 
