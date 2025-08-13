@@ -1,4 +1,4 @@
-# Code Challenge Arena
+# Practice Python Challenges Anywhere
 
 A Python game designed to help improve coding skills through interactive challenges.
 
