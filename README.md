@@ -20,6 +20,10 @@ A Python game designed to help improve coding skills through interactive challen
 git clone https://github.com/kevinveeder/code-challenge-arena.git
 cd code-challenge-arena
 
+# Create and activate virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
 # Install dependencies
 pip install -r requirements.txt
 
