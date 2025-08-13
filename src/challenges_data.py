@@ -39,7 +39,8 @@ def create_basic_challenges():
         category=Category.BASICS,
         difficulty=Difficulty.EASY,
         solution_checker=check_hello_world,
-        hints=["Use the print() function", "Don't forget the quotes around the text"]
+        hints=["Use the print() function", "Don't forget the quotes around the text"],
+        expected_answer='print("Hello, World!")'
     ))
     
     # Variable assignment challenge
@@ -61,7 +62,8 @@ def create_basic_challenges():
         category=Category.BASICS,
         difficulty=Difficulty.EASY,
         solution_checker=check_variables,
-        hints=["Variables are created with = sign", "Strings need quotes, numbers don't"]
+        hints=["Variables are created with = sign", "Strings need quotes, numbers don't"],
+        expected_answer='name = "Your Name"\nage = 25'
     ))
     
     # Loop challenge
@@ -83,7 +85,8 @@ def create_basic_challenges():
         category=Category.BASICS,
         difficulty=Difficulty.MEDIUM,
         solution_checker=check_simple_loop,
-        hints=["Use 'for i in range(1, 11):'", "Don't forget to print(i) inside the loop"]
+        hints=["Use 'for i in range(1, 11):'", "Don't forget to print(i) inside the loop"],
+        expected_answer='for i in range(1, 11):\n  print(i)'
     ))
     
     return challenges
@@ -110,7 +113,8 @@ def create_data_structure_challenges():
         category=Category.DATA_STRUCTURES,
         difficulty=Difficulty.EASY,
         solution_checker=check_list_ops,
-        hints=["Lists are created with square brackets []", "Use append() to add items"]
+        hints=["Lists are created with square brackets []", "Use append() to add items"],
+        expected_answer='my_list = [1, 2, 3, 4, 5]\nmy_list.append(6)'
     ))
     
     return challenges
@@ -141,7 +145,8 @@ def create_algorithm_challenges():
         category=Category.ALGORITHMS,
         difficulty=Difficulty.MEDIUM,
         solution_checker=check_sort,
-        hints=["You can use the built-in sorted() function", "Or implement bubble sort if you're feeling brave"]
+        hints=["You can use the built-in sorted() function", "Or implement bubble sort if you're feeling brave"],
+        expected_answer='def sort_list(numbers):\n  return sorted(numbers)'
     ))
     
     return challenges

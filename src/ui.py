@@ -89,12 +89,19 @@ class GameUI:
     def get_user_code(self):
         # Multi-line code input from user
         print(f"\n{self.colors['info']}Enter your code (type SUBMIT when done):{self.colors['reset']}")
+        print(f"{self.colors['warning']}Tips: Lines starting at column 1 (no leading spaces), use 2 spaces for indentation{self.colors['reset']}")
         lines = []
         line_number = 1
+        current_indent = 0
+        
         while True:
             try:
-                # Show line numbers to help user track their progress
-                prompt = f"{line_number:2d}> "
+                # Show line numbers and auto-indent prompt
+                if current_indent > 0:
+                    prompt = f"{line_number:2d}> " + " " * current_indent
+                else:
+                    prompt = f"{line_number:2d}> "
+                
                 line = input(prompt)
                 
                 if line.strip().upper() == 'SUBMIT':
@@ -108,7 +115,25 @@ class GameUI:
                 elif line.strip().upper() == 'QUIT':
                     return 'QUIT'
                 
-                lines.append(line)
+                # Handle auto-indentation for next line
+                stripped_line = line.strip()
+                if stripped_line.endswith(':'):
+                    # Increase indent after colons (for loops, functions, etc.)
+                    current_indent += 2
+                elif stripped_line in ['', 'pass', 'break', 'continue'] or not stripped_line:
+                    # Reset indent after empty lines or simple statements
+                    current_indent = max(0, current_indent - 2)
+                
+                # Clean up the line to prevent indentation errors
+                if line.strip():  # Only process non-empty lines
+                    # If they started with spaces, clean them and add proper indent
+                    cleaned_line = line.strip()
+                    if current_indent > 0 and line_number > 1:
+                        cleaned_line = " " * (current_indent - 2) + cleaned_line
+                    lines.append(cleaned_line)
+                else:
+                    lines.append('')  # Keep empty lines as-is
+                
                 line_number += 1
             except KeyboardInterrupt:
                 return 'QUIT'
