@@ -126,7 +126,8 @@ class Game:
             "data_structures": "Lists, dictionaries, and data manipulation", 
             "algorithms": "Sorting, searching, and algorithmic thinking",
             "problem_solving": "Real-world coding challenges",
-            "debugging": "Find and fix broken code"
+            "debugging": "Find and fix broken code",
+            "leetcode_style": "Classic interview questions and LeetCode problems"
         }
         
         for category, description in all_categories.items():

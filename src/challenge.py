@@ -15,6 +15,7 @@ class Category(Enum):
     ALGORITHMS = "algorithms"
     PROBLEM_SOLVING = "problem_solving"
     DEBUGGING = "debugging"
+    LEETCODE = "leetcode_style"
 
 class Challenge:
     def __init__(self, id: str, title: str, description: str, category: Category, 

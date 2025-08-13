@@ -1,4 +1,6 @@
 from challenge import Challenge, Category, Difficulty
+from challenge_parser import ChallengeParser
+import os
 
 def create_basic_challenges():
     """Set up the beginner challenges to get people started"""
@@ -151,10 +153,37 @@ def create_algorithm_challenges():
     
     return challenges
 
+def create_external_challenges():
+    """Load challenges from external coding problems directory"""
+    challenges = []
+    
+    # Path to the external coding problems
+    problems_path = r"C:\Users\kevve\OneDrive\Desktop\Coding Problems"
+    
+    try:
+        parser = ChallengeParser(problems_path)
+        external_challenges = parser.parse_all_problems()
+        
+        # Filter and organize the challenges
+        for challenge in external_challenges:
+            # Skip if we already have similar basic challenges
+            if challenge.id in ['fizzbuzzz', 'factorial']:
+                continue
+            challenges.append(challenge)
+            
+        print(f"Loaded {len(challenges)} external challenges")
+        
+    except Exception as e:
+        print(f"Could not load external challenges: {e}")
+        print("Continuing with built-in challenges only...")
+    
+    return challenges
+
 def get_all_challenges():
     """Combine all challenge sets into one big list"""
     all_challenges = []
     all_challenges.extend(create_basic_challenges())
     all_challenges.extend(create_data_structure_challenges())
     all_challenges.extend(create_algorithm_challenges())
+    all_challenges.extend(create_external_challenges())
     return all_challenges

@@ -69,6 +69,8 @@ class GameEngine:
                 self.player_progress["unlocked_categories"].append(Category.PROBLEM_SOLVING.value)
             if new_level >= 8 and Category.DEBUGGING.value not in self.player_progress["unlocked_categories"]:
                 self.player_progress["unlocked_categories"].append(Category.DEBUGGING.value)
+            if new_level >= 10 and Category.LEETCODE.value not in self.player_progress["unlocked_categories"]:
+                self.player_progress["unlocked_categories"].append(Category.LEETCODE.value)
                 
     def get_player_stats(self) -> Dict:
         # Return current player info for display
