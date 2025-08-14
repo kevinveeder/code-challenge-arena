@@ -76,6 +76,16 @@ class Game:
                 hint = challenge.get_hint()
                 self.ui.show_hint(hint)
                 continue
+            elif user_input == 'EDIT':
+                # Let them edit their previous code
+                user_input = self.ui.get_user_code(editing_mode=True, previous_code=self.ui.last_submitted_code)
+                if user_input in ['QUIT', 'HINT']:
+                    if user_input == 'QUIT':
+                        break
+                    elif user_input == 'HINT':
+                        hint = challenge.get_hint()
+                        self.ui.show_hint(hint)
+                        continue
             
             # Check if their solution is correct
             success, message = challenge.check_solution(user_input)
@@ -92,7 +102,10 @@ class Game:
             else:
                 # Not quite right, let them try again
                 self.ui.show_result(False, message)
-                print("\nTry again, or type QUIT to return to menu.")
+                attempts_left = 3 - challenge.attempts
+                if attempts_left > 0:
+                    print(f"\nYou have {attempts_left} attempt(s) left before seeing the solution.")
+                print(f"Try again, type {self.ui.colors['info']}EDIT{self.ui.colors['reset']} to modify your previous code, or {self.ui.colors['info']}QUIT{self.ui.colors['reset']} to return to menu.")
     
     def check_for_unlocks(self):
         # See if player unlocked new categories and let them know

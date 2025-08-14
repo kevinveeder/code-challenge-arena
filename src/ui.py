@@ -17,6 +17,8 @@ class GameUI:
             'info': Fore.BLUE,
             'reset': Style.RESET_ALL
         }
+        # Store the last submitted code for copy/paste functionality
+        self.last_submitted_code = ""
     
     def clear_screen(self):
         # Clear terminal for cleaner display
@@ -83,16 +85,34 @@ class GameUI:
         print("1. Type your Python code (multiple lines allowed)")
         print("2. When done, press Enter to go to a new line")
         print(f"3. Type {self.colors['success']}SUBMIT{self.colors['reset']} and press Enter to check your solution")
-        print(f"\nOther commands: {self.colors['info']}HINT{self.colors['reset']} (for a hint), {self.colors['info']}QUIT{self.colors['reset']} (return to menu)")
+        print(f"\nCommands: {self.colors['info']}HINT{self.colors['reset']} (get a hint), {self.colors['info']}EDIT{self.colors['reset']} (edit previous code), {self.colors['info']}QUIT{self.colors['reset']} (return to menu)")
         print("-" * 50)
     
-    def get_user_code(self):
+    def get_user_code(self, editing_mode=False, previous_code=""):
         # Multi-line code input from user
-        print(f"\n{self.colors['info']}Enter your code (type SUBMIT when done):{self.colors['reset']}")
-        print(f"{self.colors['warning']}Tips: Use 2 spaces for indentation. Auto-indent will help you!{self.colors['reset']}")
-        lines = []
-        line_number = 1
-        current_indent = 0
+        if editing_mode:
+            print(f"\n{self.colors['info']}Editing Mode - Start fresh or modify your previous code:{self.colors['reset']}")
+            print(f"{self.colors['warning']}Your previous code:{self.colors['reset']}")
+            # Show the existing code
+            if previous_code:
+                print("-" * 30)
+                for i, line in enumerate(previous_code.split('\n'), 1):
+                    print(f"{i:2d}: {line}")
+                print("-" * 30)
+            print(f"{self.colors['info']}Type your code below (this will replace the previous code):{self.colors['reset']}")
+            print(f"{self.colors['warning']}Tip: You can copy parts from above if needed. Type SUBMIT when done.{self.colors['reset']}")
+            lines = []
+            line_number = 1
+            current_indent = 0
+        else:
+            print(f"\n{self.colors['info']}Enter your code (type SUBMIT when done):{self.colors['reset']}")
+            if self.last_submitted_code:
+                print(f"{self.colors['warning']}Tips: Use 2 spaces for indentation. Auto-indent will help you! Type EDIT to modify your previous code.{self.colors['reset']}")
+            else:
+                print(f"{self.colors['warning']}Tips: Use 2 spaces for indentation. Auto-indent will help you!{self.colors['reset']}")
+            lines = []
+            line_number = 1
+            current_indent = 0
         
         while True:
             try:
@@ -109,6 +129,12 @@ class GameUI:
                         continue
                 elif line.strip().upper() == 'HINT':
                     return 'HINT'
+                elif line.strip().upper() == 'EDIT':
+                    if self.last_submitted_code and not editing_mode:
+                        return 'EDIT'
+                    else:
+                        print(f"{self.colors['warning']}No previous code to edit, or already in edit mode.{self.colors['reset']}")
+                        continue
                 elif line.strip().upper() == 'QUIT':
                     return 'QUIT'
                 
@@ -139,7 +165,11 @@ class GameUI:
             print(f"{i:2d}: {line}")
         print("-" * 30)
         
-        return '\n'.join(lines)
+        # Store the submitted code for potential editing later
+        submitted_code = '\n'.join(lines)
+        self.last_submitted_code = submitted_code
+        
+        return submitted_code
     
     def show_hint(self, hint: str):
         # Display hint with special formatting
