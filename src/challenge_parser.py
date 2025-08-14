@@ -36,7 +36,7 @@ class ChallengeParser:
         # Generate challenge metadata
         challenge_id = self._generate_id(filepath)
         title = self._generate_title(function_info['name'])
-        description = function_info['docstring'] or "Complete the function implementation."
+        description = function_info['docstring'] or self._generate_description_from_code(function_info['name'], content)
         category = self._determine_category(challenge_id, content)
         difficulty = self._determine_difficulty(content, function_info)
         
@@ -357,6 +357,90 @@ class ChallengeParser:
                 function_lines.append(line)
         
         return '\n'.join(function_lines)
+    
+    def _generate_description_from_code(self, function_name: str, content: str) -> str:
+        """Generate helpful descriptions for functions without docstrings"""
+        
+        # Function-specific descriptions based on analysis
+        descriptions = {
+            'plus_one': """Given an array of digits representing a non-negative integer, add 1 to the integer.
+The digits are stored such that the most significant digit is at the head of the list.
+Each element in the array contains a single digit.
+
+Example: [1,2,3] represents 123, so adding 1 gives [1,2,4] (124)
+Example: [9,9] represents 99, so adding 1 gives [1,0,0] (100)""",
+            
+            'intToRoman': """Given an integer, convert it to a Roman numeral.
+Roman numerals use these symbols:
+I=1, V=5, X=10, L=50, C=100, D=500, M=1000
+
+Examples: 3 -> "III", 9 -> "IX", 58 -> "LVIII", 1994 -> "MCMXCIV"
+Note: Numbers 1-3999 are supported.""",
+            
+            'merge': """Merge two sorted integer arrays nums1 and nums2 into nums1 in sorted order.
+nums1 has size m+n where the last n elements are 0 (placeholders for nums2).
+nums2 has size n.
+
+Example: nums1=[1,2,3,0,0,0], m=3, nums2=[2,5,6], n=3
+Result: nums1 becomes [1,2,2,3,5,6]""",
+            
+            'removeDuplicates': """Given a sorted integer array, remove duplicates in-place.
+Return the number of unique elements. The first k elements of nums should contain the unique elements.
+
+Example: [1,1,2] -> return 2, nums becomes [1,2,...]
+Example: [0,0,1,1,1,2,2,3,3,4] -> return 5, nums becomes [0,1,2,3,4,...]""",
+            
+            'mySqrt': """Given a non-negative integer x, return the square root of x rounded down to the nearest integer.
+You must not use any built-in exponent function or operator.
+
+Examples: 4 -> 2, 8 -> 2 (since sqrt(8) = 2.828...), 16 -> 4""",
+            
+            'detectCapitalUse': """Given a word, determine if the usage of capitals is correct.
+Correct usage means:
+1. All letters are capitals: "USA" 
+2. All letters are lowercase: "leetcode"
+3. Only first letter is capital: "Google"
+
+Return True if correct, False otherwise.""",
+        }
+        
+        # Check if we have a specific description for this function
+        if function_name in descriptions:
+            return descriptions[function_name]
+        
+        # Try to infer from function name and code patterns
+        name_lower = function_name.lower()
+        
+        if 'palindrome' in name_lower:
+            return "Given a string, determine if it's a palindrome (reads the same forwards and backwards). Ignore case and non-alphanumeric characters."
+        elif 'anagram' in name_lower:
+            return "Given two strings, determine if they are anagrams (contain the same characters in different order)."
+        elif 'twosum' in name_lower or 'two_sum' in name_lower:
+            return "Given an array of integers and a target sum, return the indices of two numbers that add up to the target."
+        elif 'isomorphic' in name_lower:
+            return "Given two strings, determine if they are isomorphic (characters can be mapped to get from one to the other)."
+        elif 'fizz' in name_lower and 'buzz' in name_lower:
+            return "Given an integer n, return a list where multiples of 3 are 'Fizz', multiples of 5 are 'Buzz', and multiples of both are 'FizzBuzz'."
+        elif 'factorial' in name_lower:
+            return "Given a non-negative integer, return its factorial (n! = n * (n-1) * ... * 1)."
+        elif 'sort' in name_lower:
+            return "Given an array, return it sorted in ascending order."
+        elif 'reverse' in name_lower:
+            return "Given an input, return it reversed."
+        elif 'valid' in name_lower or 'check' in name_lower:
+            return "Given an input, validate it according to the specified rules and return True/False."
+        elif 'find' in name_lower or 'search' in name_lower:
+            return "Given an input, find and return the specified element or condition."
+        elif 'count' in name_lower or 'length' in name_lower:
+            return "Given an input, count and return the number of elements matching the criteria."
+        elif 'contains' in name_lower:
+            return "Given an input, determine if it contains the specified element or condition."
+        elif 'max' in name_lower and ('area' in name_lower or 'profit' in name_lower):
+            return "Given constraints, find and return the maximum value possible."
+        elif 'roman' in name_lower:
+            return "Convert between integers and Roman numerals."
+        else:
+            return f"Implement the {function_name} function. Look at the test cases and code structure to understand what it should do."
     
     def parse_all_problems(self) -> List[Challenge]:
         """Parse all Python files in the problems directory"""
