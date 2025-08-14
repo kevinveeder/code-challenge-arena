@@ -8,6 +8,16 @@ from typing import List, Tuple, Callable
 from challenge import Challenge, Category, Difficulty
 
 
+def find_function_with_param_count(user_globals: dict, expected_param_count: int):
+    """Helper function to find any user-defined function with the expected parameter count"""
+    for name, obj in user_globals.items():
+        if callable(obj) and hasattr(obj, '__code__'):
+            user_params = len(obj.__code__.co_varnames[:obj.__code__.co_argcount])
+            if user_params == expected_param_count:
+                return obj
+    return None
+
+
 class ChallengeParser:
     """Converts coding problem files to Challenge objects"""
     
@@ -114,10 +124,13 @@ class ChallengeParser:
                 # Execute user's code
                 user_globals = {}
                 exec(user_code, user_globals)
-                user_func = user_globals.get(function_name)
+                
+                # Find any function in user's code that matches the expected signature
+                original_params = len(expected_func.__code__.co_varnames[:expected_func.__code__.co_argcount])
+                user_func = find_function_with_param_count(user_globals, original_params)
                 
                 if not user_func:
-                    return False, f"Your code must define a function named '{function_name}'"
+                    return False, f"Your code must define a function that takes {original_params} parameter(s)"
                 
                 # Test with basic cases if we have them
                 basic_tests = [

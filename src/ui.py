@@ -89,7 +89,7 @@ class GameUI:
     def get_user_code(self):
         # Multi-line code input from user
         print(f"\n{self.colors['info']}Enter your code (type SUBMIT when done):{self.colors['reset']}")
-        print(f"{self.colors['warning']}Tips: Lines starting at column 1 (no leading spaces), use 2 spaces for indentation{self.colors['reset']}")
+        print(f"{self.colors['warning']}Tips: Use 2 spaces for indentation. Auto-indent will help you!{self.colors['reset']}")
         lines = []
         line_number = 1
         current_indent = 0
@@ -97,10 +97,7 @@ class GameUI:
         while True:
             try:
                 # Show line numbers and auto-indent prompt
-                if current_indent > 0:
-                    prompt = f"{line_number:2d}> " + " " * current_indent
-                else:
-                    prompt = f"{line_number:2d}> "
+                prompt = f"{line_number:2d}> " + " " * current_indent
                 
                 line = input(prompt)
                 
@@ -115,33 +112,22 @@ class GameUI:
                 elif line.strip().upper() == 'QUIT':
                     return 'QUIT'
                 
-                # Handle auto-indentation for next line
+                # Store the line exactly as typed (including any leading spaces from the prompt)
+                # The prompt already provides the correct indentation, so we just need the user's input
+                actual_line = " " * current_indent + line.strip() if line.strip() else ""
+                lines.append(actual_line)
+                
+                # Update indentation level for next line based on what they just typed
                 stripped_line = line.strip()
                 if stripped_line.endswith(':'):
-                    # Increase indent after colons (for loops, functions, etc.)
+                    # Increase indent after colons (functions, loops, if statements, etc.)
                     current_indent += 2
-                elif stripped_line in ['', 'pass', 'break', 'continue'] or not stripped_line:
-                    # Reset indent after empty lines or simple statements
+                elif stripped_line == '' and current_indent > 0:
+                    # Blank line reduces indent (end of block)
                     current_indent = max(0, current_indent - 2)
-                
-                # Clean up the line to prevent indentation errors
-                if line.strip():  # Only process non-empty lines
-                    # Always start with the stripped line
-                    cleaned_line = line.strip()
-                    
-                    # Only add indentation if:
-                    # 1. We're not on the first line AND
-                    # 2. The previous line ended with a colon (indicating a block)
-                    should_indent = (line_number > 1 and 
-                                   lines and 
-                                   lines[-1].strip().endswith(':'))
-                    
-                    if should_indent and current_indent > 0:
-                        cleaned_line = " " * current_indent + cleaned_line
-                    
-                    lines.append(cleaned_line)
-                else:
-                    lines.append('')  # Keep empty lines as-is
+                elif stripped_line in ['pass', 'break', 'continue', 'return'] or stripped_line.startswith('return '):
+                    # These statements often end a block
+                    current_indent = max(0, current_indent - 2)
                 
                 line_number += 1
             except KeyboardInterrupt:

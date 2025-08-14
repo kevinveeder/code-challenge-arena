@@ -1,5 +1,5 @@
 from challenge import Challenge, Category, Difficulty
-from challenge_parser import ChallengeParser
+from challenge_parser import ChallengeParser, find_function_with_param_count
 import os
 
 def create_basic_challenges():
@@ -141,25 +141,28 @@ def create_algorithm_challenges():
         try:
             exec_globals = {}
             exec(code, exec_globals)
-            # Check if they have a function that can sort
-            if 'sort_list' in exec_globals:
-                test_result = exec_globals['sort_list']([3, 1, 4, 1, 5])
+            
+            # Look for any function that takes 1 parameter (list to sort)
+            sort_func = find_function_with_param_count(exec_globals, 1)
+            
+            if sort_func:
+                test_result = sort_func([3, 1, 4, 1, 5])
                 if test_result == [1, 1, 3, 4, 5]:
                     return True, "Excellent sorting!"
                 return False, "Your function doesn't sort correctly."
-            return False, "Create a function called 'sort_list'."
+            return False, "Create a function that takes a list and returns it sorted."
         except Exception as e:
             return False, f"Error testing your function: {e}"
     
     challenges.append(Challenge(
         id="basic_sort",
         title="Sort a List",
-        description="Write a function called 'sort_list' that takes a list of numbers and returns it sorted.",
+        description="Write a function that takes a list of numbers and returns it sorted. You can name your function whatever you like!",
         category=Category.ALGORITHMS,
         difficulty=Difficulty.MEDIUM,
         solution_checker=check_sort,
         hints=["You can use the built-in sorted() function", "Or implement bubble sort if you're feeling brave"],
-        expected_answer='def sort_list(numbers):\n  return sorted(numbers)'
+        expected_answer='def my_sort_function(numbers):\n  return sorted(numbers)'
     ))
     
     return challenges
