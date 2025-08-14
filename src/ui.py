@@ -125,9 +125,8 @@ class GameUI:
                 elif stripped_line == '' and current_indent > 0:
                     # Blank line reduces indent (end of block)
                     current_indent = max(0, current_indent - 2)
-                elif stripped_line in ['pass', 'break', 'continue', 'return'] or stripped_line.startswith('return '):
-                    # These statements often end a block
-                    current_indent = max(0, current_indent - 2)
+                # Note: Removed auto-dedent for return/pass/break/continue as it was causing issues
+                # Users can manually control indentation or use blank lines to reduce indent
                 
                 line_number += 1
             except KeyboardInterrupt:

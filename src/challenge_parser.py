@@ -163,6 +163,11 @@ class ChallengeParser:
                             
                             if expected_result != user_result:
                                 return False, f"Test failed with input {args}. Expected {expected_result}, got {user_result}"
+                        except NameError as e:
+                            if 'true' in str(e).lower() or 'false' in str(e).lower():
+                                return False, f"Error: Use 'True' and 'False' (with capital letters) for boolean values, not 'true'/'false'"
+                            else:
+                                return False, f"Name error in your code: {e}"
                         except Exception as e:
                             return False, f"Error running test with {args}: {e}"
                 
