@@ -1,6 +1,6 @@
 # Practice Python Challenges Anywhere
 
-This CLI python game is designed to help improve coding skills through interactive challenges.
+This python game is designed to help improve coding skills through interactive challenges.
 
 ## Features
 
